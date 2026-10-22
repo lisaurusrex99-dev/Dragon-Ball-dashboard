@@ -1,3 +1,4 @@
+
 from pathlib import Path
 from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
@@ -26,11 +27,57 @@ GREEN = "#39b54a"
 
 
 # ==========================================
-# LOCAL IMAGE FILES
+# SHENRON BACKGROUND
 # ==========================================
 
-# These names match the files in your screenshot.
-# No renaming or format conversion is necessary.
+background_path = ROOT / "shenron.jpeg"
+
+if background_path.exists():
+    encoded_image = base64.b64encode(
+        background_path.read_bytes()
+    ).decode("utf-8")
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: #090909;
+        }}
+
+        .stApp::before {{
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/jpeg;base64,{encoded_image}");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            opacity: 0.10;
+            pointer-events: none;
+            z-index: 0;
+        }}
+
+        [data-testid="stAppViewContainer"] {{
+            background: transparent;
+        }}
+
+        [data-testid="stHeader"] {{
+            background: transparent;
+        }}
+
+        .stApp > * {{
+            position: relative;
+            z-index: 1;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# ==========================================
+# LOCAL IMAGE FILES
+# ==========================================
 
 LOCAL_IMAGES = {
     "goten": "Goten.jpeg",
@@ -64,7 +111,6 @@ def setup_design():
         font = ROOT / filename
 
         if font.exists():
-
             encoded = base64.b64encode(
                 font.read_bytes()
             ).decode("utf-8")
@@ -220,7 +266,6 @@ def parse_ki(value):
     }
 
     try:
-
         amount = Decimal(amount_text)
 
         if unit:
@@ -243,7 +288,6 @@ def get_character_image(name, image_url):
 
     key = name_key(name)
 
-    # First check the 12 locally supplied images.
     if key in LOCAL_IMAGES:
 
         filename = LOCAL_IMAGES[key]
@@ -252,8 +296,6 @@ def get_character_image(name, image_url):
         if path.is_file():
             return str(path)
 
-    # Then use an existing URL from the CSV.
-    # This does not call the Dragon Ball API.
     url = text_value(image_url)
 
     if url.startswith(("https://", "http://")):
@@ -271,6 +313,7 @@ def show_image(image):
                 image,
                 use_container_width=True
             )
+
         except Exception:
             st.caption("Image could not be loaded")
 
@@ -394,6 +437,7 @@ def load_data():
             "max_ki": max_ki,
 
             "power": parse_ki(max_ki)
+
         })
 
     return pd.DataFrame(characters)
@@ -468,6 +512,7 @@ def show_profile(character):
         "Total Battles",
         display_number(character["total_battles"])
     )
+
     b.metric(
         "Wins",
         display_number(character["wins"])
@@ -513,7 +558,9 @@ def show_profile(character):
         )
 
     st.divider()
+
     st.header("BIOGRAPHY")
+
     st.write(character["biography"])
 
 
@@ -705,6 +752,7 @@ with col3:
 # ==========================================
 
 st.divider()
+
 st.header("EXPLORE ALL CHARACTERS")
 
 search = st.text_input(
