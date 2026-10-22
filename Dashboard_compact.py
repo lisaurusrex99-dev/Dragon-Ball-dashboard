@@ -534,7 +534,7 @@ verified = df[df["total_battles"].notna()].copy()
 
 a, b, c = st.columns(3)
 
-a.metric("Total Characters", len(df))
+a.metric("IT'S OVER 68?!", f"{len(df)} TOTAL CHARACTERS!")
 
 b.metric(
     "Characters with Battle Data",
