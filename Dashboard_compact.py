@@ -20,7 +20,7 @@ st.set_page_config(
 
 ROOT = Path(__file__).resolve().parent
 CSV_FILE = ROOT / "dragon_ball_69_OFFLINE_DATABASE.csv"
-IMAGES_DIR = ROOT / "images"
+IMAGES_DIR = ROOT
 
 GREEN = "#39b54a"
 
