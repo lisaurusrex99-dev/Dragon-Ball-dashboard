@@ -468,3 +468,311 @@ def show_profile(character):
         "Total Battles",
         display_number(character["total_battles"])
     )
+    b.metric(
+        "Wins",
+        display_number(character["wins"])
+    )
+
+    c.metric(
+        "Losses",
+        display_number(character["losses"])
+    )
+
+    d.metric(
+        "Draws",
+        display_number(character["draws"])
+    )
+
+    rate = pd.to_numeric(
+        character["win_rate"],
+        errors="coerce"
+    )
+
+    if pd.notna(rate):
+        st.metric("Win Rate", f"{rate:.1f}%")
+    else:
+        st.metric("Win Rate", "Not verified")
+
+    if numeric_value(character["total_battles"]) is None:
+        st.warning(
+            "Battle statistics are not yet verified "
+            "for this character."
+        )
+
+    if character["scope"] != "Unknown":
+        st.caption(
+            "Battle data scope: " + character["scope"]
+        )
+
+    if character["source"].startswith(
+        ("https://", "http://")
+    ):
+        st.link_button(
+            "View Battle Source",
+            character["source"]
+        )
+
+    st.divider()
+    st.header("BIOGRAPHY")
+    st.write(character["biography"])
+
+
+# ==========================================
+# CHARACTER CARDS
+# ==========================================
+
+def character_card(character):
+
+    with st.container(border=True):
+
+        show_image(character["image"])
+
+        st.subheader(character["name"])
+
+        st.caption(
+            character["race"]
+            + " | "
+            + character["affiliation"]
+        )
+
+        st.write(
+            "**Battles:**",
+            display_number(character["total_battles"])
+        )
+
+        url = (
+            "?character="
+            + quote(character["name"], safe="")
+        )
+
+        st.markdown(
+            f'<a href="{url}" target="_self">'
+            'View Profile →</a>',
+            unsafe_allow_html=True
+        )
+
+
+# ==========================================
+# START DASHBOARD
+# ==========================================
+
+setup_design()
+
+if not CSV_FILE.exists():
+    st.error(
+        "Database not found: "
+        "dragon_ball_69_OFFLINE_DATABASE.csv"
+    )
+    st.stop()
+
+try:
+    df = load_data()
+
+except Exception as error:
+    st.error(f"Could not load data: {error}")
+    st.stop()
+
+
+# ==========================================
+# HEADER
+# ==========================================
+
+st.title("EVERYTHING DRAGON BALL")
+
+st.caption(
+    "Character Encyclopedia | Power Levels | "
+    "Battle Statistics"
+)
+
+
+# ==========================================
+# CHARACTER PROFILE
+# ==========================================
+
+selected = st.query_params.get("character")
+
+if selected is not None:
+
+    matches = df[df["name"] == selected]
+
+    if not matches.empty:
+        show_profile(matches.iloc[0])
+    else:
+        st.warning("Character not found.")
+
+    st.stop()
+
+
+# ==========================================
+# DASHBOARD OVERVIEW
+# ==========================================
+
+st.header("DASHBOARD OVERVIEW")
+
+verified = df[
+    df["total_battles"].notna()
+].copy()
+
+a, b, c = st.columns(3)
+
+a.metric(
+    "IT'S OVER 68?!",
+    f"{len(df)} TOTAL CHARACTERS!"
+)
+
+b.metric(
+    "Characters with Battle Data",
+    len(verified)
+)
+
+c.metric(
+    "Battles in Available Records",
+    display_number(
+        verified["total_battles"].sum()
+    ) if not verified.empty else "Not verified"
+)
+
+st.caption(
+    "The combined battle count is a sum of "
+    "character records, not unique fights. "
+    "Some fights may appear for multiple characters."
+)
+
+st.divider()
+
+
+# ==========================================
+# CHARACTER RANKINGS
+# ==========================================
+
+st.header("CHARACTER RANKINGS")
+
+strongest = df[
+    df["power"].notna()
+].copy()
+
+if not strongest.empty:
+    strongest = strongest.sort_values(
+        "power",
+        ascending=False
+    )
+
+weakest = strongest.sort_values(
+    "power",
+    ascending=True
+)
+
+most_battles = verified.sort_values(
+    "total_battles",
+    ascending=False
+)
+
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
+    st.subheader("TOP 5 STRONGEST")
+
+    if strongest.empty:
+        st.info("No Ki data available.")
+    else:
+        for _, character in strongest.head(5).iterrows():
+            character_card(character)
+
+
+with col2:
+    st.subheader("TOP 5 WEAKEST")
+
+    if weakest.empty:
+        st.info("No Ki data available.")
+    else:
+        for _, character in weakest.head(5).iterrows():
+            character_card(character)
+
+
+with col3:
+    st.subheader("TOP 5 MOST BATTLES")
+
+    if most_battles.empty:
+        st.info("No verified battle data.")
+    else:
+        for _, character in most_battles.head(5).iterrows():
+            character_card(character)
+
+
+# ==========================================
+# EXPLORE CHARACTERS
+# ==========================================
+
+st.divider()
+st.header("EXPLORE ALL CHARACTERS")
+
+search = st.text_input(
+    "Search Characters",
+    placeholder="Goku, Vegeta, Frieza..."
+)
+
+filtered = df[
+    df["name"].str.contains(
+        search,
+        case=False,
+        na=False,
+        regex=False
+    )
+].copy()
+
+race_options = sorted(df["race"].unique())
+
+selected_races = st.multiselect(
+    "Filter by Race",
+    race_options
+)
+
+if selected_races:
+    filtered = filtered[
+        filtered["race"].isin(selected_races)
+    ]
+
+battle_filter = st.checkbox(
+    "Only characters with battle statistics"
+)
+
+if battle_filter:
+    filtered = filtered[
+        filtered["total_battles"].notna()
+    ]
+
+st.caption(
+    f"Showing {len(filtered)} of {len(df)} characters"
+)
+
+
+# ==========================================
+# CHARACTER GRID
+# ==========================================
+
+for start in range(0, len(filtered), 4):
+
+    columns = st.columns(4)
+    batch = filtered.iloc[start:start + 4]
+
+    for column, (_, character) in zip(
+        columns,
+        batch.iterrows()
+    ):
+        with column:
+            character_card(character)
+
+
+# ==========================================
+# FOOTER
+# ==========================================
+
+st.divider()
+
+st.caption(
+    "Everything Dragon Ball | "
+    "Local character database | "
+    "English biographies | "
+    "No live Dragon Ball API requests"
+)
