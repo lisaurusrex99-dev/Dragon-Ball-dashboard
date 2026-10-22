@@ -31,7 +31,7 @@ GREEN = "#39b54a"
 # ==========================================
 
 background_path = ROOT / "shenron.jpeg"
-
+st.write("Shenron found:", background_path.exists())
 if background_path.exists():
     encoded_image = base64.b64encode(
         background_path.read_bytes()
