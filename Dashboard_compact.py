@@ -52,7 +52,7 @@ if background_path.exists():
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
-            opacity: 0.10;
+            opacity: 0.20;
             pointer-events: none;
             z-index: 0;
         }}
