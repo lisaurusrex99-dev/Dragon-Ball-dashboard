@@ -1,6 +1,6 @@
-
 from pathlib import Path
 from decimal import Decimal, InvalidOperation
+from urllib.parse import quote
 import base64
 import re
 
@@ -20,7 +20,9 @@ st.set_page_config(
 )
 
 ROOT = Path(__file__).resolve().parent
+
 CSV_FILE = ROOT / "dragon_ball_69_complete_structure.csv"
+BIOS_FILE = ROOT / "dragon_ball_character_bios.csv"
 
 GREEN = "#39b54a"
 
@@ -99,6 +101,10 @@ def setup_design():
 
         [data-testid="stVerticalBlockBorderWrapper"] {{
             border-color: #333333;
+        }}
+
+        a {{
+            color: {GREEN};
         }}
         </style>
         """,
@@ -210,13 +216,62 @@ def show_image(url):
 
 
 # ==========================================
+# LOAD ENGLISH BIOGRAPHIES
+# ==========================================
+
+def load_english_bios():
+    if not BIOS_FILE.exists():
+        raise FileNotFoundError(
+            "dragon_ball_character_bios.csv is missing. "
+            "This file must be in the GitHub repository."
+        )
+
+    bios = pd.read_csv(BIOS_FILE)
+
+    required = {"english_name", "bio"}
+
+    missing = required - set(bios.columns)
+
+    if missing:
+        raise ValueError(
+            "Missing biography CSV columns: "
+            + ", ".join(sorted(missing))
+        )
+
+    bios = bios.dropna(
+        subset=["english_name"]
+    ).copy()
+
+    bios["_match_name"] = (
+        bios["english_name"]
+        .astype(str)
+        .map(name_key)
+    )
+
+    bio_lookup = {}
+
+    for _, row in bios.iterrows():
+        key = row["_match_name"]
+        biography = text_value(row["bio"])
+
+        if biography != "Unknown":
+            bio_lookup[key] = biography
+
+    return bio_lookup
+
+
+# ==========================================
 # LOAD CSV + API
 # ==========================================
 
 @st.cache_data(ttl=3600)
 def load_data():
 
+    # Main CSV: battle statistics and character data
     data = pd.read_csv(CSV_FILE)
+
+    # Separate CSV: English biographies
+    bio_lookup = load_english_bios()
 
     required = [
         "english_name",
@@ -236,10 +291,16 @@ def load_data():
 
     if missing:
         raise ValueError(
-            "Missing CSV columns: " + ", ".join(missing)
+            "Missing CSV columns: "
+            + ", ".join(missing)
         )
 
-    # Optional Dragon Ball API information
+    # API is used for images, race, gender,
+    # affiliation and Ki data.
+    #
+    # IMPORTANT:
+    # Spanish API biographies are NOT used.
+
     api_characters = {}
 
     try:
@@ -248,6 +309,7 @@ def load_data():
             params={"limit": 100},
             timeout=12
         )
+
         response.raise_for_status()
 
         payload = response.json()
@@ -259,7 +321,10 @@ def load_data():
         )
 
         for character in items:
-            key = name_key(character.get("name", ""))
+            key = name_key(
+                character.get("name", "")
+            )
+
             api_characters[key] = character
 
     except (requests.RequestException, ValueError, TypeError):
@@ -283,6 +348,7 @@ def load_data():
 
         name = text_value(row["english_name"])
         key = name_key(name)
+
         api_key = aliases.get(key, key)
 
         info = api_characters.get(
@@ -290,45 +356,69 @@ def load_data():
             api_characters.get(key, {})
         )
 
-        # Avoid assigning another character's API
-        # information when names are ambiguous.
+        # Avoid assigning ambiguous API records.
         if key in ["futuretrunks", "trunkskid"]:
             info = {}
 
         ki = text_value(info.get("ki"))
         max_ki = text_value(info.get("maxKi"))
 
+        # English biography comes exclusively
+        # from dragon_ball_character_bios.csv.
+
+        biography = bio_lookup.get(key)
+
+        if not biography:
+            biography = (
+                "English biography not available "
+                "for this character."
+            )
+
         characters.append({
             "name": name,
+
             "favorite_food": text_value(
                 row["favorite_food"]
             ),
+
             "name_origin": text_value(
                 row["name_origin"]
             ),
+
             "total_battles": row["total_battles"],
             "wins": row["wins"],
             "losses": row["losses"],
             "draws": row["draws"],
             "win_rate": row["win_rate_pct"],
+
             "source": text_value(
                 row.get("source_url")
             ),
+
             "scope": text_value(
                 row.get("source_scope")
             ),
+
             "status": text_value(
                 row.get("data_status")
             ),
-            "race": text_value(info.get("race")),
-            "gender": text_value(info.get("gender")),
+
+            "race": text_value(
+                info.get("race")
+            ),
+
+            "gender": text_value(
+                info.get("gender")
+            ),
+
             "affiliation": text_value(
                 info.get("affiliation")
             ),
+
             "image": info.get("image", ""),
-"biography": text_value(
-    row.get("bio") or info.get("description")
-            ),
+
+            "biography": biography,
+
             "ki": ki,
             "max_ki": max_ki,
             "power": parse_ki(max_ki)
@@ -342,8 +432,10 @@ def load_data():
 # ==========================================
 
 def show_profile(character):
+
     st.markdown(
-        '<a href="?" target="_self">← Back to Dashboard</a>',
+        '<a href="?" target="_self">'
+        '← Back to Dashboard</a>',
         unsafe_allow_html=True
     )
 
@@ -359,50 +451,84 @@ def show_profile(character):
     with right:
         st.subheader("CHARACTER INFORMATION")
 
-        st.write("**Name:**", character["name"])
-        st.write("**Race:**", character["race"])
-        st.write("**Gender:**", character["gender"])
+        st.write(
+            "**Name:**",
+            character["name"]
+        )
+
+        st.write(
+            "**Race:**",
+            character["race"]
+        )
+
+        st.write(
+            "**Gender:**",
+            character["gender"]
+        )
+
         st.write(
             "**Affiliation:**",
             character["affiliation"]
         )
+
         st.write(
             "**Favorite Food:**",
             character["favorite_food"]
         )
+
         st.write(
             "**Name Origin:**",
             character["name_origin"]
         )
 
     st.divider()
+
     st.header("POWER LEVELS")
 
     col1, col2 = st.columns(2)
 
-    col1.metric("Base Ki", character["ki"])
-    col2.metric("Maximum Ki", character["max_ki"])
+    col1.metric(
+        "Base Ki",
+        character["ki"]
+    )
+
+    col2.metric(
+        "Maximum Ki",
+        character["max_ki"]
+    )
 
     st.divider()
+
     st.header("BATTLE STATISTICS")
 
     a, b, c, d = st.columns(4)
 
     a.metric(
         "Total Battles",
-        display_number(character["total_battles"])
+        display_number(
+            character["total_battles"]
+        )
     )
+
     b.metric(
         "Wins",
-        display_number(character["wins"])
+        display_number(
+            character["wins"]
+        )
     )
+
     c.metric(
         "Losses",
-        display_number(character["losses"])
+        display_number(
+            character["losses"]
+        )
     )
+
     d.metric(
         "Draws",
-        display_number(character["draws"])
+        display_number(
+            character["draws"]
+        )
     )
 
     rate = pd.to_numeric(
@@ -411,19 +537,29 @@ def show_profile(character):
     )
 
     if pd.notna(rate):
-        st.metric("Win Rate", f"{rate:.1f}%")
+        st.metric(
+            "Win Rate",
+            f"{rate:.1f}%"
+        )
     else:
-        st.metric("Win Rate", "Not verified")
+        st.metric(
+            "Win Rate",
+            "Not verified"
+        )
 
-    if numeric_value(character["total_battles"]) is None:
+    if numeric_value(
+        character["total_battles"]
+    ) is None:
+
         st.warning(
-            "Battle statistics are not yet verified "
-            "for this character."
+            "Battle statistics are not yet "
+            "verified for this character."
         )
 
     if character["scope"] != "Unknown":
         st.caption(
-            "Battle data scope: " + character["scope"]
+            "Battle data scope: "
+            + character["scope"]
         )
 
     if character["source"].startswith(
@@ -435,6 +571,7 @@ def show_profile(character):
         )
 
     st.divider()
+
     st.header("BIOGRAPHY")
 
     st.write(character["biography"])
@@ -445,29 +582,40 @@ def show_profile(character):
 # ==========================================
 
 def character_card(character, key):
+
     with st.container(border=True):
+
         show_image(character["image"])
 
         st.subheader(character["name"])
 
         st.caption(
-            character["race"] + " | "
+            character["race"]
+            + " | "
             + character["affiliation"]
         )
 
         st.write(
             "**Battles:**",
-            display_number(character["total_battles"])
+            display_number(
+                character["total_battles"]
+            )
         )
 
-        from urllib.parse import quote
-
-        url = "?character=" + quote(character["name"], safe="")
+        url = (
+            "?character="
+            + quote(
+                character["name"],
+                safe=""
+            )
+        )
 
         st.markdown(
-            f'<a href="{url}" target="_self">View Profile →</a>',
+            f'<a href="{url}" target="_self">'
+            'View Profile →</a>',
             unsafe_allow_html=True
         )
+
 
 # ==========================================
 # MAIN APPLICATION
@@ -482,15 +630,23 @@ if not CSV_FILE.exists():
     )
     st.stop()
 
+if not BIOS_FILE.exists():
+    st.error(
+        "English biographies CSV not found: "
+        "dragon_ball_character_bios.csv"
+    )
+    st.stop()
+
 try:
     df = load_data()
 
 except Exception as error:
-    st.error(f"Could not load data: {error}")
+    st.error(
+        f"Could not load data: {error}"
+    )
     st.stop()
 
-if "selected_character" not in st.session_state:
-    st.session_state.selected_character = None
+
 # ==========================================
 # HEADER
 # ==========================================
@@ -508,15 +664,21 @@ st.caption(
 # ==========================================
 
 selected = st.query_params.get("character")
+
 if selected is not None:
 
-    matches = df[df["name"] == selected]
+    matches = df[
+        df["name"] == selected
+    ]
 
     if not matches.empty:
-        show_profile(matches.iloc[0])
-
+        show_profile(
+            matches.iloc[0]
+        )
     else:
-        st.session_state.selected_character = None
+        st.warning(
+            "Character not found."
+        )
 
     st.stop()
 
@@ -527,11 +689,16 @@ if selected is not None:
 
 st.header("DASHBOARD OVERVIEW")
 
-verified = df[df["total_battles"].notna()].copy()
+verified = df[
+    df["total_battles"].notna()
+].copy()
 
 a, b, c = st.columns(3)
 
-a.metric("IT'S OVER 68?!", f"{len(df)} TOTAL CHARACTERS!")
+a.metric(
+    "IT'S OVER 68?!",
+    f"{len(df)} TOTAL CHARACTERS!"
+)
 
 b.metric(
     "Characters with Battle Data",
@@ -540,15 +707,18 @@ b.metric(
 
 c.metric(
     "Battles in Available Records",
-    display_number(verified["total_battles"].sum())
+    display_number(
+        verified["total_battles"].sum()
+    )
     if not verified.empty
     else "Not verified"
 )
 
 st.caption(
-    "The combined battle count is a sum of character "
-    "records, not a count of unique fights. "
-    "Some fights may appear for multiple characters."
+    "The combined battle count is a sum "
+    "of character records, not a count "
+    "of unique fights. Some fights may "
+    "appear for multiple characters."
 )
 
 st.divider()
@@ -560,7 +730,9 @@ st.divider()
 
 st.header("CHARACTER RANKINGS")
 
-strongest = df[df["power"].notna()].copy()
+strongest = df[
+    df["power"].notna()
+].copy()
 
 if not strongest.empty:
     strongest = strongest.sort_values(
@@ -580,11 +752,20 @@ most_battles = verified.sort_values(
 
 col1, col2, col3 = st.columns(3)
 
+
+# ==========================================
+# TOP 5 STRONGEST
+# ==========================================
+
 with col1:
+
     st.subheader("TOP 5 STRONGEST")
 
     if strongest.empty:
-        st.info("No Ki data available.")
+        st.info(
+            "No Ki data available."
+        )
+
     else:
         for index, (_, character) in enumerate(
             strongest.head(5).iterrows()
@@ -594,11 +775,20 @@ with col1:
                 f"strong_{index}"
             )
 
+
+# ==========================================
+# TOP 5 WEAKEST
+# ==========================================
+
 with col2:
+
     st.subheader("TOP 5 WEAKEST")
 
     if weakest.empty:
-        st.info("No Ki data available.")
+        st.info(
+            "No Ki data available."
+        )
+
     else:
         for index, (_, character) in enumerate(
             weakest.head(5).iterrows()
@@ -608,11 +798,20 @@ with col2:
                 f"weak_{index}"
             )
 
+
+# ==========================================
+# TOP 5 MOST BATTLES
+# ==========================================
+
 with col3:
+
     st.subheader("TOP 5 MOST BATTLES")
 
     if most_battles.empty:
-        st.info("No verified battle data.")
+        st.info(
+            "No verified battle data."
+        )
+
     else:
         for index, (_, character) in enumerate(
             most_battles.head(5).iterrows()
@@ -645,7 +844,9 @@ filtered = df[
     )
 ].copy()
 
-race_options = sorted(df["race"].unique())
+race_options = sorted(
+    df["race"].unique()
+)
 
 selected_races = st.multiselect(
     "Filter by Race",
@@ -654,7 +855,9 @@ selected_races = st.multiselect(
 
 if selected_races:
     filtered = filtered[
-        filtered["race"].isin(selected_races)
+        filtered["race"].isin(
+            selected_races
+        )
     ]
 
 battle_filter = st.checkbox(
@@ -667,13 +870,26 @@ if battle_filter:
     ]
 
 st.caption(
-    f"Showing {len(filtered)} of {len(df)} characters"
+    f"Showing {len(filtered)} "
+    f"of {len(df)} characters"
 )
 
-for start in range(0, len(filtered), 4):
+
+# ==========================================
+# CHARACTER GRID
+# ==========================================
+
+for start in range(
+    0,
+    len(filtered),
+    4
+):
 
     columns = st.columns(4)
-    batch = filtered.iloc[start:start + 4]
+
+    batch = filtered.iloc[
+        start:start + 4
+    ]
 
     for column, (_, character) in zip(
         columns,
@@ -695,6 +911,8 @@ st.divider()
 
 st.caption(
     "Data: Dragon Ball API and Dragon Ball "
-    "battle research CSV. Missing statistics "
-    "are displayed as Not verified, not zero."
+    "battle research CSV. English biographies "
+    "are loaded from the separate biography CSV. "
+    "Missing statistics are displayed as "
+    "Not verified, not zero."
 )
