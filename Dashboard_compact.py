@@ -342,23 +342,12 @@ def load_data():
 # ==========================================
 
 def show_profile(character):
-        st.markdown("[↑ Go to top](#everything-dragon-ball)")
-    import streamlit.components.v1 as components
-
-    components.html(
-        """
-        <script>
-        window.parent.scrollTo({top: 0, left: 0, behavior: 'instant'});
-        </script>
-        """,
-        height=0,
+    st.markdown(
+        '<a href="?" target="_self">← Back to Dashboard</a>',
+        unsafe_allow_html=True
     )
 
     st.divider()
-
-    if st.button("← Back to Dashboard"):
-        st.session_state.selected_character = None
-        st.rerun()
 
     st.title(character["name"].upper())
 
@@ -471,10 +460,14 @@ def character_card(character, key):
             display_number(character["total_battles"])
         )
 
-        if st.button("View Profile", key=key):
-            st.session_state.selected_character = character["name"]
-            st.rerun()
+        from urllib.parse import quote
 
+        url = "?character=" + quote(character["name"], safe="")
+
+        st.markdown(
+            f'<a href="{url}" target="_self">View Profile →</a>',
+            unsafe_allow_html=True
+        )
 
 # ==========================================
 # MAIN APPLICATION
@@ -498,8 +491,6 @@ except Exception as error:
 
 if "selected_character" not in st.session_state:
     st.session_state.selected_character = None
-
-
 # ==========================================
 # HEADER
 # ==========================================
@@ -516,8 +507,7 @@ st.caption(
 # PROFILE VIEW
 # ==========================================
 
-selected = st.session_state.selected_character
-
+selected = st.query_params.get("character")
 if selected is not None:
 
     matches = df[df["name"] == selected]
