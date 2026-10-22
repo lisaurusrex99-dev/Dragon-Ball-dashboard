@@ -326,8 +326,8 @@ def load_data():
                 info.get("affiliation")
             ),
             "image": info.get("image", ""),
-            "biography": text_value(
-                info.get("description")
+"biography": text_value(
+    row.get("bio") or info.get("description")
             ),
             "ki": ki,
             "max_ki": max_ki,
