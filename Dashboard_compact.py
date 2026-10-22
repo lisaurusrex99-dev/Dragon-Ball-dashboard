@@ -468,5 +468,3 @@ def show_profile(character):
         "Total Battles",
         display_number(character["total_battles"])
     )
-
-    b.metric(
