@@ -462,11 +462,10 @@ def character_card(character, key):
             display_number(character["total_battles"])
         )
 
-        if st.button("View Profile", key=key):
-            st.session_state.selected_character = (
-                character["name"]
-            )
-            st.rerun()
+       if st.button("View Profile", key=key):
+    st.session_state.selected_character = character["name"]
+    st.query_params["character"] = character["name"]
+    st.rerun()
 
 
 # ==========================================
