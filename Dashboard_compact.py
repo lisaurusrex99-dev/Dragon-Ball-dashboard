@@ -342,6 +342,7 @@ def load_data():
 # ==========================================
 
 def show_profile(character):
+        st.markdown("[↑ Go to top](#everything-dragon-ball)")
     import streamlit.components.v1 as components
 
     components.html(
