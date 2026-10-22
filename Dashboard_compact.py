@@ -342,6 +342,16 @@ def load_data():
 # ==========================================
 
 def show_profile(character):
+    import streamlit.components.v1 as components
+
+    components.html(
+        """
+        <script>
+        window.parent.scrollTo({top: 0, left: 0, behavior: 'instant'});
+        </script>
+        """,
+        height=0,
+    )
 
     st.divider()
 
