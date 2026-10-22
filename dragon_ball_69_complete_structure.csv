@@ -1,0 +1,70 @@
+number,english_name,favorite_food,name_origin,total_battles,wins,losses,draws,win_rate_pct,source_url,source_scope,data_status
+1,Goku,Will eat anything,"Son Goku comes from Sun Wukong, the Monkey King in Journey to the West. Kakarot comes from carrot.",133,79,28,26,59.4,https://dragonball.guru/goku/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+2,Gohan,Will eat anything,Gohan means cooked rice or meal in Japanese.,42,22,15,5,52.4,https://dragonball.guru/gohan/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+3,Goten,"Pocky, strawberry daifuku",Ten means heaven; his name follows the Son family's naming pattern.,,,,,,,,Not verified
+4,Vegeta,Will eat anything,Vegetable.,61,31,21,9,50.8,https://dragonball.guru/vegeta/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+5,Future Trunks,Convenience store bento,"Trunks, a type of underwear.",,,,,,,,Not verified
+6,Trunks (kid),Yakiniku,"Trunks, a type of underwear.",,,,,,,,Not verified
+7,Piccolo,"Water, particularly thawed ice water from the northern area","Piccolo, a small woodwind instrument.",34,15,15,4,44.1,https://dragonball.guru/piccolo/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+8,Kuririn,Chinese buffet,Kuri means chestnut in Japanese; the name also references Shaolin.,,,,,,,,Not verified
+9,Yamcha,Hard-baked soba,"Yum cha, a Cantonese expression associated with tea and dim sum.",,,,,,,,Not verified
+10,Roshi,Home-delivered pizza,Rōshi means old master or teacher.,19,15,3,1,78.9,https://dragonball.guru/master-roshi/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+11,Tenshinhan,"Jiaozi/gyouza, shumai","Tenshindon, a Japanese Chinese-style rice dish.",20,8,9,3,40.0,https://dragonball.guru/tien/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Previously sourced; recheck recommended
+12,Chaozu,Tenshindon,"Jiaozi, Chinese dumplings.",,,,,,,,Not verified
+13,Yajirobe,Roast wild hog,"Yajirobē, a traditional Japanese balancing toy.",4,2,1,1,50.0,https://dragonball.guru/yajirobe/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+14,Bulma,Strawberries,"Bloomers, a type of underwear.",,,,,,,,Not verified
+15,Chi Chi,Chinese chimaki,Japanese word associated with milk or breasts.,4,1,3,0,25.0,https://dragonball.guru/chi-chi/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+16,Mr. Satan,High-class steak,"Satan, the Devil. His real name, Mark, is an anagram of akuma (demon).",,,,,,,,Not verified
+17,Videl,"Okonomi-yaki, Caesar salad",Anagram of devil.,,,,,,,,Not verified
+18,Beerus,"Cup ramen, pudding",Beer.,,,,,,,,Not verified
+19,Majin Buu,Candy and sweets,"Boo, from the magical phrase Bibbidi-Bobbidi-Boo.",14,8,2,4,57.1,https://dragonball.guru/majin-buu/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+20,Whis,"Omakase sushi (buttery ootoro, briny sea urchin and golden tamago), instant ramen, shrimp and vegetable tempura",Whiskey.,1,0,0,1,0.0,https://dragonball.guru/whis/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+21,Android 18,No specific favorite food verified,"Her human name, Lazuli, comes from lapis lazuli, a gemstone.",18,13,4,1,72.2,https://dragonball.guru/android-18/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+22,Android 17,No specific favorite food verified,"His human name, Lapis, comes from lapis lazuli, a gemstone.",22,15,2,5,68.2,https://dragonball.guru/android-17/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Previously sourced; recheck recommended
+23,Frieza,Has been shown eating a crab and drinking wine,Freezer.,30,20,6,4,66.7,https://dragonball.guru/frieza/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Previously sourced; recheck recommended
+24,Cell,Absorbs people's life energy,Biological cells.,,,,,,,,Not verified
+25,Broly,"Chocolate and warm, roasted meat",Broccoli.,6,2,2,2,33.3,https://dragonball.guru/broly/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+26,Jiren,No specific favorite food verified,"Possible wordplay on renji, meaning stove or range.",,,,,,,,Not verified
+27,Goku Black,No specific favorite food verified; Zamasu likes tea and flying pigs,"Goku's name combined with Black, referring to his appearance and identity.",,,,,,,,Not verified
+28,Zamasu,Tea and flying pigs,"Zamasu, an archaic Japanese expression associated with existence.",,,,,,,,Not verified
+29,Pan,No specific favorite food verified,Pan means bread in Japanese and is also the name of a Greek mythological god.,,,,,,,,Not verified
+30,King Kai,No specific favorite food verified,Kaiō means King of Worlds.,,,,,,,,Not verified
+31,Korin,Associated with Senzu Beans,"Possible connection to karin, Japanese for quince.",,,,,,,,Not verified
+32,Zarbon,Taste unknown,"Zabon, Japanese for pomelo, a citrus fruit.",,,,,,,,Not verified
+33,Dodoria,Taste unknown,"Durian, a tropical fruit.",,,,,,,,Not verified
+34,Ginyu,Taste unknown,"Gyūnyū, Japanese for cow's milk.",4,1,3,0,25.0,https://dragonball.guru/captain-ginyu/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Previously sourced; recheck recommended
+35,Gotenks,Taste unknown,Combination of Goten and Trunks.,,,,,,,,Not verified
+36,Bardock,Taste unknown,"Burdock, an edible root plant.",,,,,,,,Not verified
+37,Launch,Taste unknown,Lunch.,,,,,,,,Not verified
+38,Dende,Taste unknown,"Denden-mushi, Japanese for snail.",,,,,,,,Not verified
+39,Android 16,Taste unknown,Android designation; no separate name pun confirmed.,,,,,,,,Not verified
+40,Android 19,Taste unknown,Android designation; no separate name pun confirmed.,,,,,,,,Not verified
+41,Dr. Gero,Taste unknown,"Gero, Japanese for vomit.",,,,,,,,Not verified
+42,Android 13,Taste unknown,Android designation; no separate name pun confirmed.,,,,,,,,Not verified
+43,Android 14,Taste unknown,Android designation; no separate name pun confirmed.,,,,,,,,Not verified
+44,Android 15,Taste unknown,Android designation; no separate name pun confirmed.,,,,,,,,Not verified
+45,Nail,Taste unknown,"Snail, following the Namekian naming theme.",,,,,,,,Not verified
+46,Raditz,Taste unknown,Radish.,,,,,,,,Not verified
+47,Babidi,Taste unknown,"Bibbidi, from Bibbidi-Bobbidi-Boo.",,,,,,,,Not verified
+48,Zeno,Taste unknown,Zen'ō means King of All.,,,,,,,,Not verified
+49,Kibito Kai,Taste unknown,"Combination of Kibito and Kai, reflecting Kibito's fusion with Shin.",,,,,,,,Not verified
+50,Toppo,Taste unknown,"Possible connection to pot, fitting the kitchen-related naming theme.",7,1,2,4,14.3,https://dragonball.guru/toppo/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+51,Dyspo,Taste unknown,"Possible wordplay on disposal, as in garbage disposal.",,,,,,,,Not verified
+52,Marcarita,Taste unknown,"Margarita, an alcoholic cocktail.",,,,,,,,Not verified
+53,Belmod,Taste unknown,"Vermouth, a fortified wine.",,,,,,,,Not verified
+54,Grand Priest,Taste unknown,"A title describing his divine position, rather than a personal name pun.",,,,,,,,Not verified
+55,Gogeta,Taste unknown,Combination of Goku and Vegeta.,,,,,,,,Not verified
+56,Vegito,Taste unknown,"Combination of Vegeta and Kakarot, based on the Japanese name Vegetto.",,,,,,,,Not verified
+57,Janemba,Taste unknown,Possibly related to the French phrase je n'aime pas; other interpretations associate the name with evil thoughts or waves.,,,,,,,,Not verified
+58,South Kai,Taste unknown,Title identifying the Kai of the southern galaxy quadrant.,,,,,,,,Not verified
+59,East Kai,Taste unknown,Title identifying the Kai of the eastern galaxy quadrant.,,,,,,,,Not verified
+60,West Kai,Taste unknown,Title identifying the Kai of the western galaxy quadrant.,,,,,,,,Not verified
+61,Grand Kai,Taste unknown,Title meaning Great King of Worlds.,,,,,,,,Not verified
+62,Shin,Taste unknown,Shin can mean god or true in Japanese; also part of Kaiōshin.,,,,,,,,Not verified
+63,North Supreme Kai,Taste unknown,Title identifying the northern Supreme Kai.,,,,,,,,Not verified
+64,South Supreme Kai,Taste unknown,Title identifying the southern Supreme Kai.,,,,,,,,Not verified
+65,West Supreme Kai,Taste unknown,Title identifying the western Supreme Kai.,,,,,,,,Not verified
+66,Grand Supreme Kai,Taste unknown,Title meaning Great Supreme Kai.,,,,,,,,Not verified
+67,Kibito,Taste unknown,"Tsukibito, Japanese for attendant or personal aide.",,,,,,,,Not verified
+68,Hit,Unknown,"From the English word hit, referring to an assassination.",9,5,2,2,55.6,https://dragonball.guru/hit/,Dragon Ball Guru fight record (site-defined scope and team-fight rules),Source checked this session
+69,Kefla,Unknown,Combination of Caulifla and Kale.,,,,,,,,Not verified
